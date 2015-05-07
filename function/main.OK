@@ -1,0 +1,255 @@
+<?php
+
+/* 
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+if (!isset($_SESSION))
+{
+    session_start();
+}
+function getAbsolutePath()
+{
+    return $_SERVER['DOCUMENT_ROOT'].'';
+}
+function getFunctionPath()
+{
+    return getAbsolutePath().'/function';
+}
+function getTemplatePath()
+{
+    return getAbsolutePath().'/template';
+}
+function getFormPath()
+{
+    return getAbsolutePath().'/form';
+}
+function getAssetPath()
+{
+    return getDomainRoot().'/assets';
+}
+function getDomainRoot()
+{
+    return $_SERVER['SERVER_NAME'];
+}
+function getHome()
+{
+    return getDomainRoot().'/view/dashboard.php';
+}
+function getAPIBaseDomain()
+{
+    return 'https://cmeds-api.azurewebsites.net';
+}
+function getStaffID()
+{
+    return $_SESSION['idStaff'];
+}
+function getUsername()
+{
+    return $_SESSION['username'];
+}
+function getRoleName()
+{
+    return $_SESSION['roleName'];
+}
+function getAdminName()
+{
+    return $_SESSION['name'];
+}
+function isAuthenticate()
+{
+    $session = 's';
+    $cookie = 'c';
+    if(isset($_COOKIE['aToken']))
+    {
+        $cookie = $_COOKIE['aToken'];
+    }
+    if(isset($_SESSION['aToken']))
+    {
+        $session = $_SESSION['aToken'];
+    }
+    if(($cookie !== '') && ($cookie === $session) && ($session !== ''))
+    {
+        return true;
+    }
+    return false;
+}
+function getToken()
+{
+    return $_SESSION['aToken'];
+}
+function isSuperUser()
+{
+    if(getRoleName() == 'Super Admin')
+    {
+        return true;
+    }
+    return false;
+        
+}
+function isAdministrator()
+{
+    if(getRoleName() == 'Admin')
+    {
+        return true;
+    }
+    return false;
+}
+function isStaffPrint()
+{
+    if(getRoleName() == 'Staff Print')
+    {
+        return true;
+    }
+    return false;
+}
+function isStaffCashier()
+{
+    if(getRoleName() == 'Staff Cashier')
+    {
+        return true;
+    }
+    return false;
+}
+function isLocalUser()
+{
+    if(getRoleName() == 'User Local')
+    {
+        return true;
+    }
+    return false;
+}
+function notAuthorized()
+{
+    header('Location: /view/error.php');
+}
+function printPaging($totalItem, $itemsPerPage, $currentPage) {
+    $nr = $totalItem;
+    $lastPage = ceil($nr / $itemsPerPage);
+    ?>
+    <div class="pull-left">Halaman <?php echo $currentPage ?> dari <?php echo $lastPage ?></div>
+    <div class="pull-right">
+        <div class="paging-ic">
+    <?php
+    if ($lastPage <= 5) {
+        for ($i = 1; $i <= $lastPage; $i++) {
+            echo "<a href=" . $_SERVER['PHP_SELF'] . "?page=" . $i . ">" . $i . "</a>";
+        }
+    } else {
+        if ($currentPage >= 3) {
+            $p1 = $currentPage - 2;
+            $p2 = $currentPage - 1;
+            $p3 = $currentPage;
+            $p4 = $currentPage + 1;
+            $p5 = $currentPage + 2;
+            if($p5 >= $lastPage)
+            {
+                $p1 = $lastPage - 4;
+                $p2 = $lastPage - 3;
+                $p3 = $lastPage - 2;
+                $p4 = $lastPage - 1;
+                $p5 = $lastPage;
+            }
+            if($p5 <= 4)
+            {
+                $p1 = $currentPage;
+                $p2 = $currentPage + 1;
+                $p3 = $currentPage + 2;
+                $p4 = $currentPage + 3;
+                $p5 = $currentPage + 4;
+            }
+            
+        } else {
+            $p1 = $currentPage;
+            $p2 = $p1 + 1;
+            $p3 = $p2 + 1;
+            $p4 = $p3 + 1;
+            $p5 = $p4 + 1;
+            if($currentPage < 5)
+            {
+                $p1 = 1;
+                $p2 = $p1 + 1;
+                $p3 = $p2 + 1;
+                $p4 = $p3 + 1;
+                $p5 = $p4 + 1;
+            }
+        }
+        if(($p1 >= 3) || ($currentPage == 4))
+        {
+            echo "<a href=" . $_SERVER['PHP_SELF'] . "?page=1>Halaman Pertama</a>";
+        }
+        if(($p1 != 0) && ($p1 <= $lastPage))
+        {
+            if($p1 == $currentPage)
+            {
+                echo "<a class = 'active' href=" . $_SERVER['PHP_SELF'] . "?page=" . $p1 . ">" . $p1 . "</a>";
+            }
+            else
+            {
+                echo "<a href=" . $_SERVER['PHP_SELF'] . "?page=" . $p1 . ">" . $p1 . "</a>";
+            }
+            
+        }
+        if(($p2 != 0) && ($p2 <= $lastPage))
+        {
+            if($p2 == $currentPage)
+            {
+                echo "<a class='active' href=" . $_SERVER['PHP_SELF'] . "?page=" . $p2 . ">" . $p2 . "</a>";
+            }
+            else
+            {
+                echo "<a href=" . $_SERVER['PHP_SELF'] . "?page=" . $p2 . ">" . $p2 . "</a>";
+            }
+            
+        }
+        if(($p3 != 0) && ($p3 <= $lastPage))
+        {
+            if($p3 == $currentPage)
+            {
+                echo "<a class='active' href=" . $_SERVER['PHP_SELF'] . "?page=" . $p3 . ">" . $p3 . "</a>";
+            }
+            else
+            {
+                echo "<a href=" . $_SERVER['PHP_SELF'] . "?page=" . $p3 . ">" . $p3 . "</a>";
+            }
+            
+        }
+        if(($p4 != 0) && ($p4 <= $lastPage))
+        {
+            if($p4 == $currentPage)
+            {
+                echo "<a class='active' href=" . $_SERVER['PHP_SELF'] . "?page=" . $p4 . ">" . $p4 . "</a>";
+            }
+            else
+            {
+                echo "<a href=" . $_SERVER['PHP_SELF'] . "?page=" . $p4 . ">" . $p4 . "</a>";
+            }
+            
+        }
+        if(($p5 != 0) && ($p5 <= $lastPage))
+        {
+            if($p5 == $currentPage)
+            {
+                echo "<a class='active' href=" . $_SERVER['PHP_SELF'] . "?page=" . $p5 . ">" . $p5 . "</a>";
+            }
+            else
+            {
+                echo "<a href=" . $_SERVER['PHP_SELF'] . "?page=" . $p5 . ">" . $p5 . "</a>";
+            }
+        }
+        if($p5 <= ($lastPage - 1))
+        {
+            echo "<a href=" . $_SERVER['PHP_SELF'] . "?page=".$lastPage. ">Halaman Terakhir</a>";
+        }
+    }
+    ?>
+        </div>
+    </div>
+    <?php
+}
+
+function getDefaultRow()
+{
+    return 20;
+}
